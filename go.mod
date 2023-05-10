@@ -16,6 +16,7 @@ require (
 	github.com/influxdata/influxdb1-client v0.0.0-20220302092344-a9ab5670611c
 	github.com/kitex-contrib/resolver-dns v0.0.0-20211026091019-d57feaffb777
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
+	github.com/opentracing-contrib/go-grpc v0.0.0-20210225150812-73cb765af46e
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/robfig/cron/v3 v3.0.1
@@ -29,6 +30,7 @@ require (
 	go.mongodb.org/mongo-driver v1.9.1
 	go.uber.org/zap v1.21.0
 	golang.org/x/net v0.0.0-20220809184613-07c6da5e1ced
+	google.golang.org/grpc v1.46.0
 	gorm.io/datatypes v1.0.5
 	gorm.io/driver/mysql v1.3.2
 	gorm.io/driver/postgres v1.3.5

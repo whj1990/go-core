@@ -2,11 +2,12 @@ package trace
 
 import (
 	"fmt"
-	"github.com/whj1990/go-core/config"
+	"io"
+
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
-	"io"
+	"github.com/whj1990/go-core/config"
 )
 
 func Init() io.Closer {
@@ -29,9 +30,17 @@ func initGlobalTracer(serviceName, hostPort string) io.Closer {
 		ServiceName: serviceName,
 	}
 	tracer, closer, err := cfg.NewTracer(jaegercfg.Logger(jaeger.StdLogger))
+
 	if err != nil {
 		panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
 	}
+	/*sender := transport.NewHTTPTransport(
+		hostPort,
+	)
+	tracer, closer := jaeger.NewTracer(serviceName,
+		jaeger.NewConstSampler(true),
+		jaeger.NewRemoteReporter(sender, jaeger.ReporterOptions.Logger(jaeger.StdLogger)),
+	)*/
 	opentracing.InitGlobalTracer(tracer)
 	return closer
 }
