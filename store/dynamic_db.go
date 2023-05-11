@@ -49,9 +49,9 @@ func (db *DynamicDb) add(t, address, username, password, dbName string) (*gorm.D
 			address,
 			username,
 			password,
-			config.GetInt("db.maxIdleConns", 10),
-			config.GetInt("db.maxOpenConns", 100),
-			config.GetInt("db.connMaxLifetimeHour", 1),
+			config.GetNaCosInt("db.maxIdleConns", 10),
+			config.GetNaCosInt("db.maxOpenConns", 100),
+			config.GetNaCosInt("db.connMaxLifetimeHour", 1),
 			db.gormLogger,
 		)
 	case "postgresql":
@@ -60,9 +60,9 @@ func (db *DynamicDb) add(t, address, username, password, dbName string) (*gorm.D
 			address,
 			username,
 			password,
-			config.GetInt("db.maxIdleConns", 10),
-			config.GetInt("db.maxOpenConns", 100),
-			config.GetInt("db.connMaxLifetimeHour", 1),
+			config.GetNaCosInt("db.maxIdleConns", 10),
+			config.GetNaCosInt("db.maxOpenConns", 100),
+			config.GetNaCosInt("db.connMaxLifetimeHour", 1),
 			db.gormLogger,
 		)
 	}
@@ -126,8 +126,8 @@ func (db *DynamicDb) closeAndDeleteExpired() {
 func NewDynamicDb(gormLogger logger.Interface) *DynamicDb {
 	db := &DynamicDb{
 		items:             map[string]*DynamicDbItem{},
-		cacheHours:        config.GetInt("dynamic.db.cacheHours", 72),
-		gcIntervalMinutes: config.GetInt("dynamic.db.gcIntervalMinutes", 5),
+		cacheHours:        config.GetNaCosInt("dynamic.db.cacheHours", 72),
+		gcIntervalMinutes: config.GetNaCosInt("dynamic.db.gcIntervalMinutes", 5),
 		gormLogger:        gormLogger,
 	}
 	go db.gcLoop()

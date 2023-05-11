@@ -2,12 +2,12 @@ package launch
 
 import (
 	"context"
-	"github.com/whj1990/go-core/config"
-	"github.com/whj1990/go-core/handler"
-	"github.com/whj1990/go-core/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/whj1990/go-core/config"
+	"github.com/whj1990/go-core/handler"
+	"github.com/whj1990/go-core/middleware"
 	"go.uber.org/zap"
 	"net"
 	"net/http"
@@ -37,7 +37,7 @@ func InitHttpServer(router ...HttpRouter) {
 
 	srv := &http.Server{
 		Handler: app,
-		Addr:    net.JoinHostPort("0.0.0.0", config.GetString("server.http.port", "")),
+		Addr:    net.JoinHostPort("0.0.0.0", config.GetNaCosString("server.http.port", "")),
 	}
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
@@ -48,7 +48,7 @@ func InitHttpServer(router ...HttpRouter) {
 			}
 		}
 	}()
-	zap.L().Info("Start http server", zap.String("port", config.GetString("server.http.port", "")))
+	zap.L().Info("Start http server", zap.String("port", config.GetNaCosString("server.http.port", "")))
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit

@@ -23,12 +23,12 @@ func Init() {
 	}
 
 	c := &config.AppConfig{
-		AppID:          viper.GetString("appid"),
-		Cluster:        viper.GetString("cluster"),
-		IP:             viper.GetString("url"),
-		NamespaceName:  viper.GetString("namespace"),
+		AppID:          viper.GetString("apollo.appid"),
+		Cluster:        viper.GetString("apollo.cluster"),
+		IP:             viper.GetString("apollo.url"),
+		NamespaceName:  viper.GetString("apollo.namespace"),
 		IsBackupConfig: false,
-		Secret:         viper.GetString("secret"),
+		Secret:         viper.GetString("apollo.secret"),
 	}
 	//agollo.SetLogger(&log.DefaultLogger{})
 	client, err := agollo.StartWithConfig(func() (*config.AppConfig, error) {

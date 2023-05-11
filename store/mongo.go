@@ -11,9 +11,9 @@ import (
 
 func NewMongoDB() (*mongo.Client, error) {
 	return openMongoDB(
-		config.GetString("mongo.address", ""),
-		config.GetString("mongo.username", ""),
-		config.GetString("mongo.password", ""),
+		config.GetNaCosString("mongo.address", ""),
+		config.GetNaCosString("mongo.username", ""),
+		config.GetNaCosString("mongo.password", ""),
 	)
 }
 

@@ -13,29 +13,29 @@ import (
 
 func NewReadWriteSeparationDB(gormLogger logger.Interface) (*gorm.DB, error) {
 	return openReadWriteSeparationDB(
-		config.GetString("db.name", ""),
-		config.GetString("db.write.address", ""),
-		config.GetString("db.write.username", ""),
-		config.GetString("db.write.password", ""),
-		config.GetString("db.read.address", ""),
-		config.GetString("db.read.username", ""),
-		config.GetString("db.read.password", ""),
-		config.GetInt("db.maxIdleConns", 10),
-		config.GetInt("db.maxOpenConns", 100),
-		config.GetInt("db.connMaxLifetimeHour", 1),
+		config.GetNaCosString("db.name", ""),
+		config.GetNaCosString("db.write.address", ""),
+		config.GetNaCosString("db.write.username", ""),
+		config.GetNaCosString("db.write.password", ""),
+		config.GetNaCosString("db.read.address", ""),
+		config.GetNaCosString("db.read.username", ""),
+		config.GetNaCosString("db.read.password", ""),
+		config.GetNaCosInt("db.maxIdleConns", 10),
+		config.GetNaCosInt("db.maxOpenConns", 100),
+		config.GetNaCosInt("db.connMaxLifetimeHour", 1),
 		gormLogger,
 	)
 }
 
 func NewDB(gormLogger logger.Interface) (*gorm.DB, error) {
 	return OpenDB(
-		config.GetString("db.name", ""),
-		config.GetString("db.address", ""),
-		config.GetString("db.username", ""),
-		config.GetString("db.password", ""),
-		config.GetInt("db.maxIdleConns", 10),
-		config.GetInt("db.maxOpenConns", 100),
-		config.GetInt("db.connMaxLifetimeHour", 1),
+		config.GetNaCosString("db.name", ""),
+		config.GetNaCosString("db.address", ""),
+		config.GetNaCosString("db.username", ""),
+		config.GetNaCosString("db.password", ""),
+		config.GetNaCosInt("db.maxIdleConns", 10),
+		config.GetNaCosInt("db.maxOpenConns", 100),
+		config.GetNaCosInt("db.connMaxLifetimeHour", 1),
 		gormLogger,
 	)
 }

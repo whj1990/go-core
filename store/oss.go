@@ -3,11 +3,11 @@ package store
 import (
 	"bytes"
 	"fmt"
-	"github.com/whj1990/go-core/config"
-	"github.com/whj1990/go-core/handler"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/sts"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	uuid "github.com/satori/go.uuid"
+	"github.com/whj1990/go-core/config"
+	"github.com/whj1990/go-core/handler"
 	"io/ioutil"
 	"mime/multipart"
 	"sort"
@@ -16,13 +16,13 @@ import (
 
 func NewOSSConfig() *OSSConfig {
 	return &OSSConfig{
-		EndPoint:        config.GetString("oss.endPoint", ""),
-		AccessKeyId:     config.GetString("oss.accessKeyId", ""),
-		AccessKeySecret: config.GetString("oss.accessKeySecret", ""),
-		Bucket:          config.GetString("oss.bucket", ""),
-		Host:            config.GetString("oss.host", ""),
-		RegionId:        config.GetString("oss.regionId", ""),
-		RoleArn:         config.GetString("oss.roleArn", ""),
+		EndPoint:        config.GetNaCosString("oss.endPoint", ""),
+		AccessKeyId:     config.GetNaCosString("oss.accessKeyId", ""),
+		AccessKeySecret: config.GetNaCosString("oss.accessKeySecret", ""),
+		Bucket:          config.GetNaCosString("oss.bucket", ""),
+		Host:            config.GetNaCosString("oss.host", ""),
+		RegionId:        config.GetNaCosString("oss.regionId", ""),
+		RoleArn:         config.GetNaCosString("oss.roleArn", ""),
 	}
 }
 
@@ -151,7 +151,7 @@ func GetOSSPrivateFile(path string, config *OSSConfig) (string, error) {
 }
 
 func GetOSSWriteToken(ossConfig *OSSConfig) (string, string, string, error) {
-	roleArn := config.GetString("oss.roleArn", "")
+	roleArn := config.GetNaCosString("oss.roleArn", "")
 	client, err := sts.NewClientWithAccessKey(ossConfig.RegionId, ossConfig.AccessKeyId, ossConfig.AccessKeySecret)
 	request := sts.CreateAssumeRoleRequest()
 	request.Scheme = "https"

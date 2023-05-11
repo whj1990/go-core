@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Shopify/sarama v1.36.0
-	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1499
+	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1704
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.1+incompatible
 	github.com/apolloconfig/agollo/v4 v4.1.0
 	github.com/bytedance/gopkg v0.0.0-20220531084716-665b4f21126f
@@ -30,7 +30,7 @@ require (
 	go.mongodb.org/mongo-driver v1.9.1
 	go.uber.org/zap v1.21.0
 	golang.org/x/net v0.0.0-20220809184613-07c6da5e1ced
-	google.golang.org/grpc v1.46.0
+	google.golang.org/grpc v1.48.0
 	gorm.io/datatypes v1.0.5
 	gorm.io/driver/mysql v1.3.2
 	gorm.io/driver/postgres v1.3.5
@@ -102,6 +102,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/nacos-group/nacos-sdk-go/v2 v2.2.1 // indirect
 	github.com/oleiade/lane v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
@@ -129,7 +130,7 @@ require (
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220817070843-5a390386f1f2 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
+	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	golang.org/x/tools v0.1.7 // indirect
 	google.golang.org/genproto v0.0.0-20220503193339-ba3ae3f07e29 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
