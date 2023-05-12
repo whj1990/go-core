@@ -3,6 +3,8 @@ package config
 import (
 	"flag"
 	"fmt"
+	"time"
+
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
@@ -10,12 +12,12 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"github.com/spf13/viper"
 	"github.com/whj1990/go-core/handler"
-	"strconv"
-	"time"
+	"gopkg.in/yaml.v3"
 )
 
 // nacos 配置客户端
 var naCosConfigClient config_client.IConfigClient
+var configData ConfigData
 
 func NaCosInitConfigClient() {
 	path := flag.String("c", "conf", "config path, eg: -c conf")
@@ -33,11 +35,11 @@ func NaCosInitConfigClient() {
 		*constant.NewServerConfig(
 			viper.GetString("naCos.address"),
 			viper.GetUint64("naCos.port"),
-			constant.WithContextPath(viper.GetString("naCos.context-path")),
+			//constant.WithContextPath(viper.GetString("naCos.context-path")),
 		),
 	}
 	cc := *constant.NewClientConfig(
-		constant.WithNamespaceId(viper.GetString("namespace")),
+		constant.WithNamespaceId(viper.GetString("naCos.namespace")),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
 		constant.WithLogDir("/tmp/naCos/log"),
@@ -54,50 +56,29 @@ func NaCosInitConfigClient() {
 		panic(err)
 	}
 	naCosConfigClient = client
-}
-func getConfig(params vo.ConfigParam) string {
-	content, _ := naCosConfigClient.GetConfig(params)
-	return content
-}
-func GetNaCosString(dataId, defaultValue string) string {
-	content := getConfig(vo.ConfigParam{
-		DataId: dataId,
-		Group:  viper.GetString("service-group"),
+	//获取配置
+	content, err := naCosConfigClient.GetConfig(vo.ConfigParam{
+		DataId: viper.GetString("naCos.data-id"),
+		Group:  viper.GetString("naCos.group"),
 	})
-	if content == "" {
-		content = defaultValue
+	if err != nil {
+		panic(err)
 	}
-	return content
-}
-
-func GetNaCosInt(dataId string, defaultValue int) int {
-	content := getConfig(vo.ConfigParam{
-		DataId: dataId,
-		Group:  viper.GetString("service-group"),
+	yaml.Unmarshal([]byte(content), &configData)
+	//配置监听
+	err = naCosConfigClient.ListenConfig(vo.ConfigParam{
+		DataId: viper.GetString("naCos.data-id"),
+		Group:  viper.GetString("naCos.group"),
+		OnChange: func(namespace, group, dataId, data string) {
+			yaml.Unmarshal([]byte(data), &configData)
+		},
 	})
-	if content == "" {
-		return defaultValue
-	}
-	res, err := strconv.Atoi(content)
 	if err != nil {
 		handler.HandleError(err)
 	}
-	return res
 }
-
-func GetNaCosBool(dataId string, defaultValue bool) bool {
-	content := getConfig(vo.ConfigParam{
-		DataId: dataId,
-		Group:  viper.GetString("service-group"),
-	})
-	if content == "" {
-		return defaultValue
-	}
-	res, err := strconv.ParseBool(content)
-	if err != nil {
-		handler.HandleError(err)
-	}
-	return res
+func GetNacosConfigData() *ConfigData {
+	return &configData
 }
 
 // 服务发现客户端
@@ -122,7 +103,7 @@ func NewNaCosNamingClient() {
 		),
 	}
 	clientConfig := *constant.NewClientConfig(
-		constant.WithNamespaceId(viper.GetString("namespace")),
+		constant.WithNamespaceId(viper.GetString("naCos.namespace")),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
 		constant.WithLogDir("/tmp/naCos/log"),
@@ -140,12 +121,12 @@ func NewNaCosNamingClient() {
 	}
 	naCosNamingClient = client
 	RegisterServiceInstance(vo.RegisterInstanceParam{
-		Ip:          GetNaCosString("service.ip", ""),
-		Port:        uint64(GetNaCosInt("server.port", 8310)),
-		ServiceName: GetNaCosString("server.name", "mine.grpc"),
-		GroupName:   viper.GetString("service-group"),
-		ClusterName: viper.GetString("cluster-name"),
-		Weight:      float64(GetNaCosInt("server.weight", 10)),
+		Ip:          configData.GrpcServer.Ip,
+		Port:        uint64(configData.GrpcServer.Port),
+		ServiceName: configData.GrpcServer.Name,
+		GroupName:   viper.GetString("naCos.group"),
+		ClusterName: viper.GetString("naCos.cluster-name"),
+		Weight:      configData.GrpcServer.Weight,
 		Enable:      true,
 		Healthy:     true,
 		Ephemeral:   true,

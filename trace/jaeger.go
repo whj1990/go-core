@@ -12,8 +12,8 @@ import (
 
 func Init() io.Closer {
 	return initGlobalTracer(
-		config.GetNaCosString("jaeger.serviceName", ""),
-		config.GetNaCosString("jaeger.hostPort", ""),
+		config.GetNacosConfigData().Jaeger.ServiceName,
+		config.GetNacosConfigData().Jaeger.HostPort,
 	)
 }
 

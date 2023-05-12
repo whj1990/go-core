@@ -2,6 +2,7 @@ package store
 
 import (
 	"fmt"
+
 	"github.com/whj1990/go-core/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -11,9 +12,9 @@ import (
 
 func NewMongoDB() (*mongo.Client, error) {
 	return openMongoDB(
-		config.GetNaCosString("mongo.address", ""),
-		config.GetNaCosString("mongo.username", ""),
-		config.GetNaCosString("mongo.password", ""),
+		config.GetNacosConfigData().Mongo.Address,
+		config.GetNacosConfigData().Mongo.Username,
+		config.GetNacosConfigData().Mongo.Password,
 	)
 }
 

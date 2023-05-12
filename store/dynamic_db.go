@@ -2,13 +2,14 @@ package store
 
 import (
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/whj1990/go-core/config"
 	"github.com/whj1990/go-core/encrypt"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"sync"
-	"time"
 )
 
 type DynamicDbItem struct {
@@ -49,9 +50,9 @@ func (db *DynamicDb) add(t, address, username, password, dbName string) (*gorm.D
 			address,
 			username,
 			password,
-			config.GetNaCosInt("db.maxIdleConns", 10),
-			config.GetNaCosInt("db.maxOpenConns", 100),
-			config.GetNaCosInt("db.connMaxLifetimeHour", 1),
+			config.GetNacosConfigData().Db.MaxIdleConnects,
+			config.GetNacosConfigData().Db.MaxOpenConnects,
+			config.GetNacosConfigData().Db.ConnMaxLifetimeHour,
 			db.gormLogger,
 		)
 	case "postgresql":
@@ -60,9 +61,9 @@ func (db *DynamicDb) add(t, address, username, password, dbName string) (*gorm.D
 			address,
 			username,
 			password,
-			config.GetNaCosInt("db.maxIdleConns", 10),
-			config.GetNaCosInt("db.maxOpenConns", 100),
-			config.GetNaCosInt("db.connMaxLifetimeHour", 1),
+			config.GetNacosConfigData().Db.MaxIdleConnects,
+			config.GetNacosConfigData().Db.MaxOpenConnects,
+			config.GetNacosConfigData().Db.ConnMaxLifetimeHour,
 			db.gormLogger,
 		)
 	}
@@ -126,8 +127,8 @@ func (db *DynamicDb) closeAndDeleteExpired() {
 func NewDynamicDb(gormLogger logger.Interface) *DynamicDb {
 	db := &DynamicDb{
 		items:             map[string]*DynamicDbItem{},
-		cacheHours:        config.GetNaCosInt("dynamic.db.cacheHours", 72),
-		gcIntervalMinutes: config.GetNaCosInt("dynamic.db.gcIntervalMinutes", 5),
+		cacheHours:        72,
+		gcIntervalMinutes: 5,
 		gormLogger:        gormLogger,
 	}
 	go db.gcLoop()

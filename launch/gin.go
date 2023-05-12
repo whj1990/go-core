@@ -2,6 +2,13 @@ package launch
 
 import (
 	"context"
+	"net"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -9,12 +16,6 @@ import (
 	"github.com/whj1990/go-core/handler"
 	"github.com/whj1990/go-core/middleware"
 	"go.uber.org/zap"
-	"net"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 type HttpRouter interface {
@@ -37,7 +38,7 @@ func InitHttpServer(router ...HttpRouter) {
 
 	srv := &http.Server{
 		Handler: app,
-		Addr:    net.JoinHostPort("0.0.0.0", config.GetNaCosString("server.http.port", "")),
+		Addr:    net.JoinHostPort("0.0.0.0", config.GetNacosConfigData().HttpServer.Port),
 	}
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
@@ -48,7 +49,7 @@ func InitHttpServer(router ...HttpRouter) {
 			}
 		}
 	}()
-	zap.L().Info("Start http server", zap.String("port", config.GetNaCosString("server.http.port", "")))
+	zap.L().Info("Start http server", zap.String("port", config.GetNacosConfigData().HttpServer.Port))
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit

@@ -3,11 +3,12 @@ package store
 import (
 	"context"
 	"encoding/json"
+	"strings"
+
 	"github.com/Shopify/sarama"
 	"github.com/whj1990/go-common/kafka"
 	"github.com/whj1990/go-core/config"
 	"go.uber.org/zap"
-	"strings"
 )
 
 type KafkaProducer struct {
@@ -15,7 +16,7 @@ type KafkaProducer struct {
 }
 
 func NewKafkaProducer() *KafkaProducer {
-	producer, err := sarama.NewAsyncProducer(strings.Split(config.GetNaCosString("kafka.addrs", ""), ","),
+	producer, err := sarama.NewAsyncProducer(strings.Split(config.GetNacosConfigData().Kafka.Addrs, ","),
 		nil)
 	if err != nil {
 		panic(err)
@@ -48,8 +49,8 @@ func NewKafkaConsumer(kafkaConsumerHandler KafkaConsumerHandler) *KafkaConsumer 
 	kafkaConfig := sarama.NewConfig()
 	kafkaConfig.Version = sarama.V2_8_1_0
 	kafkaConfig.Consumer.Return.Errors = true
-	consumerGroup, err := sarama.NewConsumerGroup(strings.Split(config.GetNaCosString("kafka.addrs", ""), ","),
-		config.GetNaCosString("kafka.group", ""),
+	consumerGroup, err := sarama.NewConsumerGroup(strings.Split(config.GetNacosConfigData().Kafka.Addrs, ","),
+		config.GetNacosConfigData().Kafka.GroupId,
 		kafkaConfig)
 	if err != nil {
 		panic(err)
@@ -89,7 +90,7 @@ func (h *saramaConsumerGroupHandler) ConsumeClaim(sess sarama.ConsumerGroupSessi
 func (c *KafkaConsumer) HandleMessage() {
 	for {
 		if err := c.Consumer.(sarama.ConsumerGroup).Consume(context.Background(),
-			strings.Split(config.GetNaCosString("kafka.topics", ""), ","), c.ConsumerGroupHandler); err != nil {
+			strings.Split(config.GetNacosConfigData().Kafka.Topics, ","), c.ConsumerGroupHandler); err != nil {
 			zap.L().Error("Consume handler err", zap.Error(err))
 		}
 	}

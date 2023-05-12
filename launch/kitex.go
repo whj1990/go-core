@@ -1,16 +1,18 @@
 package launch
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/cloudwego/kitex/pkg/utils"
 	"github.com/cloudwego/kitex/server"
 	"github.com/whj1990/go-core/config"
 	"github.com/whj1990/go-core/trace"
-	"time"
 )
 
 func RpcServerOptions() []server.Option {
 	return []server.Option{
-		server.WithServiceAddr(utils.NewNetAddr("tcp", ":"+config.GetNaCosString("server.port", ""))),
+		server.WithServiceAddr(utils.NewNetAddr("tcp", ":"+strconv.Itoa(config.GetNacosConfigData().GrpcServer.Port))),
 		server.WithReadWriteTimeout(60 * time.Second),
 		server.WithSuite(trace.NewServerSuite()),
 	}

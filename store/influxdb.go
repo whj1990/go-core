@@ -7,9 +7,9 @@ import (
 
 func NewInfluxDB() (client.Client, error) {
 	c, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     config.GetNaCosString("influxdb.url", ""),
-		Username: config.GetNaCosString("influxdb.username", ""),
-		Password: config.GetNaCosString("influxdb.password", ""),
+		Addr:     config.GetNacosConfigData().Influxdb.Url,
+		Username: config.GetNacosConfigData().Influxdb.Username,
+		Password: config.GetNacosConfigData().Influxdb.Password,
 	})
 	if err != nil {
 		return nil, err

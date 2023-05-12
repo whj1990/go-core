@@ -3,10 +3,11 @@ package store
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/whj1990/go-core/config"
 	"github.com/whj1990/go-core/trace"
-	"time"
 )
 
 type RedisClient struct {
@@ -39,9 +40,9 @@ func (r *RedisClient) GetObject(ctx context.Context, key string, obj interface{}
 func NewRedisClient() *RedisClient {
 	client := &RedisClient{
 		redis.NewClient(&redis.Options{
-			Addr:     config.GetNaCosString("redis.address", ""),
-			Password: config.GetNaCosString("redis.password", ""),
-			DB:       config.GetNaCosInt("redis.database", 0),
+			Addr:     config.GetNacosConfigData().Redis.Address,
+			Password: config.GetNacosConfigData().Redis.Password,
+			DB:       config.GetNacosConfigData().Redis.Database,
 		}),
 	}
 	client.AddHook(trace.NewTracingHook())

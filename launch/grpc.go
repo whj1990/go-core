@@ -20,8 +20,8 @@ func GrpcServerOptions() []grpc.ServerOption {
 	}
 }
 func RunGrpcServer(server *grpc.Server) {
-	listener, err := net.Listen(config.GetNaCosString("server.network", "tcp"), config.GetNaCosString("server.address", ""))
-	zap.L().Info("net.Listing", zap.String("port", config.GetNaCosString("server.address", "")))
+	listener, err := net.Listen(config.GetNacosConfigData().GrpcServer.Network, config.GetNacosConfigData().GrpcServer.Address)
+	zap.L().Info("net.Listing", zap.String("port", config.GetNacosConfigData().GrpcServer.Address))
 	if err != nil {
 		zap.L().Error(err.Error())
 	}

@@ -5,12 +5,13 @@ package store
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	kafkaConst "github.com/whj1990/go-common/kafka"
 	"github.com/whj1990/go-core/config"
 	"go.uber.org/zap"
-	"strings"
-	"time"
 )
 
 type KafkaProducer struct {
@@ -18,7 +19,7 @@ type KafkaProducer struct {
 }
 
 func NewKafkaProducer() *KafkaProducer {
-	producer, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": config.GetNaCosString("kafka.addrs", "")})
+	producer, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": config.GetNacosConfigData().Kafka.Addrs})
 	if err != nil {
 		panic(err)
 	}
@@ -55,14 +56,14 @@ type KafkaConsumer struct {
 
 func NewKafkaConsumer(kafkaConsumerHandler KafkaConsumerHandler) *KafkaConsumer {
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": config.GetNaCosString("kafka.addrs", ""),
-		"group.id":          config.GetNaCosString("kafka.group", ""),
-		"auto.offset.reset": config.GetNaCosString("kafka.reset", "latest"),
+		"bootstrap.servers": config.GetNacosConfigData().Kafka.Addrs,
+		"group.id":          config.GetNacosConfigData().Kafka.GroupId,
+		"auto.offset.reset": config.GetNacosConfigData().Kafka.Reset,
 	})
 	if err != nil {
 		panic(err)
 	}
-	consumer.SubscribeTopics(strings.Split(config.GetNaCosString("kafka.topics", ""), ","), nil)
+	consumer.SubscribeTopics(strings.Split(config.GetNacosConfigData().Kafka.Topics, ","), nil)
 	return &KafkaConsumer{consumer, kafkaConsumerHandler}
 }
 

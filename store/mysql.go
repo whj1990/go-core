@@ -3,39 +3,40 @@ package store
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/whj1990/go-core/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
-	"time"
 )
 
 func NewReadWriteSeparationDB(gormLogger logger.Interface) (*gorm.DB, error) {
 	return openReadWriteSeparationDB(
-		config.GetNaCosString("db.name", ""),
-		config.GetNaCosString("db.write.address", ""),
-		config.GetNaCosString("db.write.username", ""),
-		config.GetNaCosString("db.write.password", ""),
-		config.GetNaCosString("db.read.address", ""),
-		config.GetNaCosString("db.read.username", ""),
-		config.GetNaCosString("db.read.password", ""),
-		config.GetNaCosInt("db.maxIdleConns", 10),
-		config.GetNaCosInt("db.maxOpenConns", 100),
-		config.GetNaCosInt("db.connMaxLifetimeHour", 1),
+		config.GetNacosConfigData().Db.Name,
+		config.GetNacosConfigData().Db.Write.Address,
+		config.GetNacosConfigData().Db.Write.UserName,
+		config.GetNacosConfigData().Db.Write.Password,
+		config.GetNacosConfigData().Db.Read.Address,
+		config.GetNacosConfigData().Db.Read.UserName,
+		config.GetNacosConfigData().Db.Read.Password,
+		config.GetNacosConfigData().Db.MaxIdleConnects,
+		config.GetNacosConfigData().Db.MaxOpenConnects,
+		config.GetNacosConfigData().Db.ConnMaxLifetimeHour,
 		gormLogger,
 	)
 }
 
 func NewDB(gormLogger logger.Interface) (*gorm.DB, error) {
 	return OpenDB(
-		config.GetNaCosString("db.name", ""),
-		config.GetNaCosString("db.address", ""),
-		config.GetNaCosString("db.username", ""),
-		config.GetNaCosString("db.password", ""),
-		config.GetNaCosInt("db.maxIdleConns", 10),
-		config.GetNaCosInt("db.maxOpenConns", 100),
-		config.GetNaCosInt("db.connMaxLifetimeHour", 1),
+		config.GetNacosConfigData().Db.Name,
+		config.GetNacosConfigData().Db.Address,
+		config.GetNacosConfigData().Db.UserName,
+		config.GetNacosConfigData().Db.Password,
+		config.GetNacosConfigData().Db.MaxIdleConnects,
+		config.GetNacosConfigData().Db.MaxOpenConnects,
+		config.GetNacosConfigData().Db.ConnMaxLifetimeHour,
 		gormLogger,
 	)
 }
