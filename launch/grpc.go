@@ -1,7 +1,6 @@
 package launch
 
 import (
-	"math"
 	"net"
 
 	otgrpc "github.com/opentracing-contrib/go-grpc"
@@ -9,14 +8,20 @@ import (
 	"github.com/whj1990/go-core/config"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 func GrpcServerOptions() []grpc.ServerOption {
+	cer, err := credentials.NewServerTLSFromFile("./cert/server.crt", "./cert/server.key")
+	if err != nil {
+		zap.L().Error(err.Error())
+	}
 	return []grpc.ServerOption{
-		grpc.MaxRecvMsgSize(1024 * 1024 * 4),
-		grpc.MaxSendMsgSize(math.MaxInt32),
+		grpc.MaxRecvMsgSize(1024 * 1024 * 5),
+		grpc.MaxSendMsgSize(1024 * 1024 * 5),
 		grpc.UnaryInterceptor(otgrpc.OpenTracingServerInterceptor(opentracing.GlobalTracer())),
 		grpc.StreamInterceptor(otgrpc.OpenTracingStreamServerInterceptor(opentracing.GlobalTracer())),
+		grpc.Creds(cer),
 	}
 }
 func RunGrpcServer(server *grpc.Server) {

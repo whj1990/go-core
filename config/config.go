@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+
 	"github.com/apolloconfig/agollo/v4"
 	"github.com/apolloconfig/agollo/v4/env/config"
 	"github.com/spf13/viper"
@@ -11,11 +12,12 @@ var apolloClient agollo.Client
 var configPath string
 
 func Init() {
-	path := flag.String("c", "conf", "config path, eg: -c conf")
-	flag.Parse()
-	configPath = *path
-
-	viper.AddConfigPath(*path)
+	if configPath == "" {
+		path := flag.String("c", "conf", "config path, eg: -c conf")
+		flag.Parse()
+		configPath = *path
+	}
+	viper.AddConfigPath(configPath)
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	if err := viper.ReadInConfig(); err != nil {

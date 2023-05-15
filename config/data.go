@@ -1,8 +1,8 @@
 package config
 
 type ConfigData struct {
-	HttpServer `yaml:"HttpServer"`
-	GrpcServer `yaml:"grpcServer"`
+	ClientServer `yaml:"clientServer"` //客户端配置
+	GrpcServer   `yaml:"grpcServer"`   //微服务服务端配置
 	Jaeger
 	Db
 	Redis
@@ -11,8 +11,9 @@ type ConfigData struct {
 	Mongo
 	OSS
 }
-type HttpServer struct {
-	Port string
+type ClientServer struct {
+	DialAddress string `yaml:"dialAddress"`
+	Port        string
 }
 type GrpcServer struct {
 	Name    string

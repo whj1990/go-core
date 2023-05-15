@@ -8,8 +8,11 @@ import (
 	"go.uber.org/zap"
 )
 
-func InitPremise() (*zap.Logger, io.Closer) {
+func InitPremise(isServer bool) (*zap.Logger, io.Closer) {
 	config.NaCosInitConfigClient()
+	if isServer {
+		config.NewNaCosNamingClient()
+	}
 	logger := Init()
 	closer := trace.Init()
 	return logger, closer

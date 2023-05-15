@@ -38,7 +38,7 @@ func InitHttpServer(router ...HttpRouter) {
 
 	srv := &http.Server{
 		Handler: app,
-		Addr:    net.JoinHostPort("0.0.0.0", config.GetNacosConfigData().HttpServer.Port),
+		Addr:    net.JoinHostPort("0.0.0.0", config.GetNacosConfigData().ClientServer.Port),
 	}
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
@@ -49,7 +49,7 @@ func InitHttpServer(router ...HttpRouter) {
 			}
 		}
 	}()
-	zap.L().Info("Start http server", zap.String("port", config.GetNacosConfigData().HttpServer.Port))
+	zap.L().Info("Start http server", zap.String("port", config.GetNacosConfigData().ClientServer.Port))
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit

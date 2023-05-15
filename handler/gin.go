@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type BasePaginationRequest struct {
@@ -26,7 +27,7 @@ type BaseResponse struct {
 	UpdatedAt      time.Time `json:"updatedAt"`
 }
 
-type response struct {
+type Response struct {
 	Data  interface{} `json:"data"`
 	Error string      `json:"error"`
 	Code  int         `json:"code"`
@@ -40,25 +41,25 @@ type listResponse struct {
 }
 
 func HandleUnauthorizedResponse(c *gin.Context, err error) {
-	c.AbortWithStatusJSON(http.StatusUnauthorized, response{
+	c.AbortWithStatusJSON(http.StatusUnauthorized, Response{
 		Error: err.Error(),
 	})
 }
 
 func HandleErrorResponse(c *gin.Context, err error) {
-	c.AbortWithStatusJSON(http.StatusInternalServerError, response{
+	c.AbortWithStatusJSON(http.StatusInternalServerError, Response{
 		Error: err.Error(),
 	})
 }
 
 func HandleSuccessResponse(c *gin.Context) {
-	c.AbortWithStatusJSON(http.StatusOK, response{
+	c.AbortWithStatusJSON(http.StatusOK, Response{
 		Data: "ok",
 	})
 }
 
 func HandleSuccessDataResponse(c *gin.Context, data interface{}) {
-	c.AbortWithStatusJSON(http.StatusOK, response{
+	c.AbortWithStatusJSON(http.StatusOK, Response{
 		Data: data,
 	})
 }
