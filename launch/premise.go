@@ -10,9 +10,7 @@ import (
 
 func InitPremise(isServer bool) (*zap.Logger, io.Closer) {
 	config.NaCosInitConfigClient()
-	if isServer {
-		config.NewNaCosNamingClient()
-	}
+	config.NewNaCosNamingClient(isServer)
 	logger := Init()
 	closer := trace.Init()
 	return logger, closer

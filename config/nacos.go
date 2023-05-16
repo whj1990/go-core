@@ -9,6 +9,7 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/v2/model"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"github.com/spf13/viper"
 	"github.com/whj1990/go-core/handler"
@@ -90,7 +91,7 @@ func GetNaCosBaseConfig() ([]constant.ServerConfig, constant.ClientConfig) {
 	return serverConfigs, clientConfig
 }
 
-func NewNaCosNamingClient() {
+func NewNaCosNamingClient(isServer bool) {
 	serverConfigs, clientConfig := GetNaCosBaseConfig()
 	client, err := clients.NewNamingClient(
 		vo.NacosClientParam{
@@ -102,18 +103,21 @@ func NewNaCosNamingClient() {
 		panic(err)
 	}
 	naCosNamingClient = client
-	RegisterServiceInstance(vo.RegisterInstanceParam{
-		Ip:          configData.GrpcServer.Ip,
-		Port:        uint64(configData.GrpcServer.Port),
-		ServiceName: configData.GrpcServer.Name,
-		GroupName:   viper.GetString("naCos.group"),
-		ClusterName: viper.GetString("naCos.cluster-name"),
-		Weight:      configData.GrpcServer.Weight,
-		Enable:      true,
-		Healthy:     true,
-		Ephemeral:   true,
-		Metadata:    map[string]string{"idc": "shanghai", "timestamp": time.Now().Format(time.DateTime)},
-	})
+	if isServer {
+		RegisterServiceInstance(vo.RegisterInstanceParam{
+			Ip:          configData.GrpcServer.Ip,
+			Port:        uint64(configData.GrpcServer.Port),
+			ServiceName: configData.GrpcServer.Name,
+			GroupName:   viper.GetString("naCos.group"),
+			ClusterName: viper.GetString("naCos.cluster-name"),
+			Weight:      configData.GrpcServer.Weight,
+			Enable:      true,
+			Healthy:     true,
+			Ephemeral:   true,
+			Metadata:    map[string]string{"idc": "shanghai", "timestamp": time.Now().Format(time.DateTime)},
+		})
+	}
+
 }
 func RegisterServiceInstance(param vo.RegisterInstanceParam) {
 
@@ -123,12 +127,12 @@ func RegisterServiceInstance(param vo.RegisterInstanceParam) {
 	}
 	fmt.Printf("RegisterServiceInstance,param:%+v,result:%+v \n\n", param, success)
 }
-func GetService(param vo.GetServiceParam) {
+func GetService(param vo.GetServiceParam) model.Service {
 	service, err := naCosNamingClient.GetService(param)
 	if err != nil {
 		panic("GetService failed!" + err.Error())
 	}
-	fmt.Printf("GetService,param:%+v, result:%+v \n\n", param, service)
+	return service
 }
 func Subscribe(param *vo.SubscribeParam) {
 	naCosNamingClient.Subscribe(param)
@@ -136,4 +140,11 @@ func Subscribe(param *vo.SubscribeParam) {
 
 func UnSubscribe(param *vo.SubscribeParam) {
 	naCosNamingClient.Unsubscribe(param)
+}
+func SelectOneHealthyInstance(param vo.SelectOneHealthInstanceParam) *model.Instance {
+	instances, err := naCosNamingClient.SelectOneHealthyInstance(param)
+	if err != nil {
+		panic("SelectOneHealthyInstance failed!")
+	}
+	return instances
 }
