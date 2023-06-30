@@ -12,8 +12,11 @@ type ConfigData struct {
 	OSS
 }
 type ClientServer struct {
-	DialAddress string `yaml:"dialAddress"`
-	Port        string
+	Name            string
+	GrpcServerName  string `yaml:"grpcServerName"`
+	GrpcGroupName   string `yaml:"grpcGroupName"`
+	GrpcClusterName string `yaml:"grpcClusterName"` //以英文逗号分割
+	Port            string
 }
 type GrpcServer struct {
 	Name    string
